@@ -1,5 +1,11 @@
 from controller import Controller
 from sys import exit
+from colorama import init, Fore, Back, Style
+
+
+init(convert=True)
+
+
 
 
 def start_controller(con):
@@ -51,7 +57,7 @@ def menu_no_nodes():
 [2] Create Nodes
 [3] See Node Authentication Numbers
 [4] Reload Node Configs
-[5] Deploy Nodes
+\033[1;30m[5] Deploy Nodes\033[0m
 [6] Exit
 """)
 

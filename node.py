@@ -12,6 +12,8 @@ class Node:
     __consecuetive_errors = 0
     # Each Node is passed different details and given a corresponding number
     __number = None
+    # Batch of user accounts currently being processed
+    __batches = []
 
 
 
@@ -75,9 +77,11 @@ class Node:
     def __get_followers(self, followed_user_id):
 
         # Get the scores for the poi by id
+        prev_map_score = get_map_score(followed_user_id)
+        prev_zoo_score = get_zoo_score(followed_user_id)
 
         # Pull follower information
-        for user in tweepy.Cursor(self.__api.get_followers, user_id = followed_user_id, count = 300).items():
+        for user in tweepy.Cursor(self.__api.get_followers, user_id = followed_user_id, count = 200).items():
             id = user.id
             name = user.name
             user_at = user.screen_name
@@ -91,10 +95,7 @@ class Node:
             # For some reason, the true protected status of users gotten here is unknown and simply defaults to None.
             # While this is inconvenient, it doesnt not largely affect operation.
             inserted = insert_user(followed_user_id, id, user_at, is_private, AVI_path, description, created)
-            #print(inserted)
             # Calculate user scores
-            prev_map_score = get_map_score(followed_user_id)
-            prev_zoo_score = get_zoo_score(followed_user_id)
             map_score, zoo_score = calc_map_score(name, user_at, description, prev_map_score, prev_zoo_score)
                 
             if inserted == 0:
@@ -109,8 +110,6 @@ class Node:
                 self.__consecuetive_errors +=1
                 print("\t└", inserted)
 
-
-                #print("inserted \n")
             #--------------------------------#
             # ADD A LOG FILE FOR SQL CRASHES #
             #--------------------------------#

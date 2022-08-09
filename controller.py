@@ -1,7 +1,6 @@
 from platform import node
 from node import Node
 from db import db_connect
-from multiprocessing import Process
 from colorama import init, Fore, Back
 import os
 
