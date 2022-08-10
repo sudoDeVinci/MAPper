@@ -3,7 +3,7 @@
 ## Idea
 Network analysis of user groups within social media platforms may be crucial in determining organic user interest, or uncovering anomalies within spheres of interest within a network.
 Potential accounts of interest use twitter, usually only briefly before possibly being being mass-reported depending on their behaviours. During their short lifespans however, these accounts tend to have similar follower lists as they inform their peers of their accounts in off-site chat groups. Some of these accounts however, are more long-lived and well-established. These are generally harder to find for "normal" users and usually employ means to escape immediate detection.
-Through the use of network analysis, we can uncover the web of intertwined MAP users.
+Through the use of network analysis however, we can uncover the web of intertwined user relationships.
 
 ## How it works
 
@@ -16,7 +16,7 @@ I've chosen the Tweepy Python library for scraping as it provides very useful da
 
 ### Circumventing Rate Limits
 
-With the rate limits of the Twitter API being account detail specific, simply changing authorization tokens during scraping results in a mostly limit free experience. SO far, I have only managed to get 3 accounts approved, but in the future this will be many more, allowing for hours of unlimited scraping potential.
+With the rate limits of the Twitter API being account token specific, simply changing authorization tokens during scraping results in a mostly limit free experience. So far, I have only managed to get 3 accounts approved, but in the future this will be many more, allowing for hours of unlimited scraping potential.
 
 ## Improving efficiency
 
