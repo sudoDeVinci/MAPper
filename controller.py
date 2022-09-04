@@ -1,71 +1,87 @@
+from array import array
+from lib2to3.pytree import Node
 from platform import node
-from node import Node
+from api_instance import API_custom
 from db import db_connect
 from colorama import init, Fore, Back
 import os
 
 class Controller:
 
-    """
-    It may be possible to swap between nodes rather than using multiprocessing to simultaneoulsy 
-    index accounts.
-    """
 
-    __nodes = []
-    __nodeFiles = []
-    __connected = False
+    # These api credentials are for general user queries such as finding a new person of interest
+    __general_api_list = []
+    __general_api_files = []
+
+    # These api credentials are for finding followers of a user
+    __api_list = []
+    __api_files = []
+
+    # Whether the database can be successfully connected to
+    __connected: bool = False
+
+    """
+    For now, we are using only one Node instance. In the future, it will be completely possible to use multiple in parallel for
+    faster scraping, but this will require almost double the number of api credentials. I don't feel like opening 20 twitter accounts
+    right now.
+    """
+    __node = Node()
+
 
     def __init__(self) -> None:
-        self.refresh_configs()
         self.connect()
+        if self.__connected == True:
+            self.refresh_configs()
     
     #-----------------------------------------------------------------#
     #
     #-----------------------------------------------------------------#
 
-    def get_nodes(self):
-        return self.__nodes
+    def get_api_list(self) -> array[API_custom]:
+        return self.__api_list
 
+    def get_general_api_list(self) -> array[API_custom]:
+        return self.__general_api_list
 
-    def get_configs(self):
-        return self.__nodeFiles
-
-
-    def connect(self):
+    def connect(self) -> None:
         # CONNECT TO DB #
         self.__connected = db_connect()
 
 
-    def is_connected(self):
+    def is_connected(self) -> bool:
         return self.__connected
 
 
-    def refresh_configs(self):
+    def refresh_configs(self) -> None:
         #-------------------------------------------------------#
         #   WE SEARCH FOR ALL .ini FILES IN THE GIVEN DIRECTORY #
         #   THEY ARE ADDED TO AN ARRAY.                         #
         #-------------------------------------------------------#
 
-        self.__nodeFiles = [f.path for f in os.scandir('Nodes') if f.name.endswith('.ini') and f.is_file()]
+        self.__api_files = [f.path for f in os.scandir('credentials') if f.name.endswith('.ini') and f.is_file()]
+        self.__general_api_files = [f.path for f in os.scandir('gen_credentials') if f.name.endswith('.ini') and f.is_file()]
 
     #-----------------------------------------------------------------#
     #     
     #-----------------------------------------------------------------#
 
-    def create_nodes(self):
+    def create_api_list(self) -> None:
         #------------------------------------------------------------#
-        #   INITIALIZE NODES AND ADD THEM TO ARRAY IF AUTHENTICATED  #
+        #   INITIALIZE API instances AND ADD THEM TO ARRAY IF AUTHENTICATED  #
         #------------------------------------------------------------#
         
-        nodes = [Node(path) for path in self.__nodeFiles]
-        self.__nodes = [ n for n in nodes if n.is_authenticated()]
+        creds = [API_custom(path) for path in self.__api_files]
+        self.__api_list = [ n for n in creds if n.is_vaild()]
+
+        creds = [API_custom(path) for path in self.__general_api_files]
+        self.__general_api_list = [ n for n in creds if n.is_vaild()]
 
 
     #-----------------------------------------------------------------#
     #
     #-----------------------------------------------------------------#
 
-    def deploy_nodes(self):
+    def deploy_nodes(self) -> int:
 
         """
         Ideally in the final version, I want to utilize the Queue() class to have dynamically changing
@@ -73,9 +89,11 @@ class Controller:
         the application to a larger number of Nodes.
         """
         try:
-            self.__nodes[1].scrape_user()
+            self.__node.scrape_user()
         except Exception as e:
-            return e
+            print(e)
+        
+        return 0
     #-----------------------------------------------------------------#
     #
     #-----------------------------------------------------------------#

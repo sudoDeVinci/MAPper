@@ -7,7 +7,6 @@ init(convert=True)
 
 
 
-
 def start_controller(con):
     # Attempt to connect to database, exit if no connection
     if not con.is_connected():
@@ -16,8 +15,8 @@ def start_controller(con):
 
 
 # Create nodes
-def create_nodes(con):
-    print("\n----------- NODE CREATION ------------\n")
+def create_nodes(con: Controller):
+    print("\n----------- CREDENTIAL'[]; CREATION ------------\n")
     # Try to create nodes
     con.create_nodes()
     print("--------------------------------------")
@@ -25,7 +24,7 @@ def create_nodes(con):
 
 
 # Refresh Configs
-def refresh_configs(con):
+def refresh_configs(con: Controller):
     print("\n---------- CONFIG REFRESH -----------\n")
     # Try to refresh configs
     con.refresh_configs()
@@ -35,7 +34,7 @@ def refresh_configs(con):
 
 
 # print number of nodes and config files used
-def print_node_number(con):
+def print_node_number(con: Controller):
     # Print nunmber of configs
     print("\n--------- CONFIG-NODE NO. -----------\n")
     print("  Configs:  ||\t", len(con.get_configs()))

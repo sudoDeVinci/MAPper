@@ -155,14 +155,14 @@ def get_next_poi(current_poi, api):
 
                 if followers is None:
                     # We split these into two lines rather than one compound statement
-                    # to minimize the number of API and  fcuntion calls.  WHile the difference is minimal for small
+                    # to minimize the number of API and  fcuntion calls.  While the difference is minimal for small
                     # networks, it compounds as the network grows.
                     p_poi = api.get_user(user_id = row.follower_id)
                     #print('Acc:', prospective_poi.name, ' | Protected: ', prospective_poi.protected)
                     if not p_poi.protected:
                         # We only want to scrape accounts which have some definitive symbol
                         m, z = calc_map_score(p_poi.name, p_poi.screen_name, p_poi.description)
-                        if m >= 0.3 or z >= 0.30:
+                        if m >= 0.50 or z >= 0.50:
                             return row.follower_id, m, z
             except mysql.connector.Error as error:
                 return error.ms

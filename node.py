@@ -1,76 +1,27 @@
+from array import array
 import configparser
 import tweepy
+from api_instance import API_custom
 from dbinit import cnx
 from dbservices import insert_user, get_next_poi, calc_map_score, indexed_followers, assign_map_score,assign_zoo_score, get_map_score, get_zoo_score
 from colorama import init, Fore, Back
 
-class Node:
+class Worker:
 
-    __authenticated = False
-    # API instance with config details from file
-    __api = None
-    __consecuetive_errors = 0
-    # Each Node is passed different details and given a corresponding number
+    # general use API instance with config details from file
+    __api:tweepy.API = None
+
+    __consecutive_errors = 0
+
+    # Each Node is passed different details and given a corresponding number/uuid
     __number = None
+     
     # Batch of user accounts currently being processed
     __batches = []
 
 
-
-    # Initialize Node instance
-    def __init__(self, path) -> None:
-        self.__login(path)
-
-
-
-    # Authenticate Node Instance
-    def is_authenticated(self):
-        authenticated = self.__authenticated
-        return authenticated
-
-
-
-    # Get the node number to match with details
-    def get_number(self):
-        return self.__number
-
-
-
-    # Login using config file details
-    def __login(self, path):
-        # read the config file
-        config = configparser.ConfigParser()
-        try:
-            config.read(path)
-
-            # Pass the config file details
-            api_key = config['twitter']['API_KEY']
-            api_key_secret = config['twitter']['SECRET_KEY']
-
-            access_token = config['twitter']['ACCESS_TOKEN']
-            access_token_secret = config['twitter']['SECRET_ACCESS_TOKEN']
-
-            bearer_token = config['twitter']['BEARER_TOKEN']
-
-            self.__number = config['twitter']['NUMBER']
-
-            # Authenticate Node details
-            try:
-                auth = tweepy.OAuthHandler(api_key, api_key_secret)
-                auth.set_access_token(access_token, access_token_secret)
-                
-                self.__api = tweepy.API(auth, wait_on_rate_limit = True)
-
-                self.__authenticated = True
-
-                # Print Node status
-                print(">> Authenticated: Node {0} Running..\n".format(self.__number))
-            
-            except Exception as e:
-                print("\t└ ERROR: Please check authentication details for node {0}.\n\t\t└ ".format(self.__number), e)
-        except Exception as e:
-            print("\t└ ERROR: Please check authentication details for nodes")
-
+    def __init__(self, api: tweepy.API) -> None:
+        self.__api = api
 
 
     # pull follower information for full follower list
@@ -80,6 +31,11 @@ class Node:
         prev_map_score = get_map_score(followed_user_id)
         prev_zoo_score = get_zoo_score(followed_user_id)
 
+        """
+        TODO:
+            Separate each page of followers into possible 
+        """
+
         # Pull follower information
         for user in tweepy.Cursor(self.__api.get_followers, user_id = followed_user_id, count = 200).items():
             id = user.id
@@ -88,7 +44,7 @@ class Node:
             is_private = user.protected
             AVI_path = user.profile_image_url
             description = user.description
-            created = user.created_at
+            created = user.created_at 
 
 
             # Insert user records
@@ -99,7 +55,7 @@ class Node:
             map_score, zoo_score = calc_map_score(name, user_at, description, prev_map_score, prev_zoo_score)
                 
             if inserted == 0:
-                self.__consecuetive_errors = 0
+                self.__consecutive_errors = 0
                 
                 """
                 New scores only calculated if succesful insertion of user.
@@ -107,7 +63,7 @@ class Node:
                 assign_zoo_score(id, zoo_score)
                 assign_map_score(id, map_score)
             else:
-                self.__consecuetive_errors +=1
+                self.__consecutive_errors +=1
                 print("\t└", inserted)
 
             #--------------------------------#
@@ -119,8 +75,7 @@ class Node:
             #---------------------------------------------------------------#
 
 
-
-    def __get_exsiting_poi(self):
+    def __set_initial_poi(self) -> tweepy.User:
         # Get person of interest by scrren_name
         init_user_at = input("\nPerson of interest: @")
         poi = self.__api.get_user(screen_name = init_user_at)
@@ -134,23 +89,24 @@ class Node:
                 init_user_at = input("\nUser {0} is private, give new User: @".format(poi.name))
             poi = self.__api.get_user(screen_name = init_user_at)
 
-        return poi
-                 
+        return poi                 
 
 
-    def __get_valid_poi(self):
+    def __get_valid_poi(self) -> tweepy.User:
         while True:
-            poi = self.__get_exsiting_poi()
+            poi = self.__set_initial_poi()
             """
             Check if given user has been scraped
             """ 
             followers = indexed_followers(poi.id_str)
 
             """
-            If the number of followers in the db is within 5% of the number currently
+            If the number of followers in the db is within 20% of the number currently
             then count the poi as fully scraped.
 
-            This works for slow, gradual changes in followers. If a mass influx or decrease in followers for one user happens, a full wiping and redoing of the map region would be needed.
+            This works for slow, gradual changes in followers, and for accounts that cannot be indexed for one reason or another.
+            If a mass influx or decrease in followers for one user happens, a full wiping and redoing of the map region 
+            would be needed, but this will be handled preferably by simply doing a full scrape again.
             For our purposes however, this is fine.
             """
 
@@ -173,8 +129,12 @@ class Node:
                 return poi
 
 
-
-    def scrape_user(self):
+    """
+    Manually point to a user as the first poi, then scrape followers using an array of api keys.
+    Once done, find a follwoer that hasnt been indexed and give them a map and zoo score. If either score is at least 0.5
+    then continue
+    """
+    def scrape_user(self, api_list: array[API_custom]) -> None:
 
         poi = self.__get_valid_poi()
         insert_user(poi.id_str, poi.id_str, poi.screen_name, poi.protected, poi.profile_image_url_https, poi.description, poi.created_at)
@@ -192,6 +152,7 @@ class Node:
             
             self.__get_followers(poi.id_str)
 
+            # We pass the general operation api instance for this 
             poi_tup = get_next_poi(poi, self.__api)
 
             
