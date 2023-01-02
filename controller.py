@@ -8,6 +8,10 @@ import os
 
 class Controller:
 
+    """
+    outdated, need to rewrite
+    """
+
 
     # These api credentials are for general user queries such as finding a new person of interest
     __general_api_list = []
