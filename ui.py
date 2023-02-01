@@ -7,7 +7,6 @@ from mysql.connector.errors import DatabaseError
 init(convert=True)
 
 
-
 def start_controller(con):
     # Attempt to connect to database, exit if no connection
     if not con.is_connected():
