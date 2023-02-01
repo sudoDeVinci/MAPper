@@ -1,6 +1,7 @@
 from controller import Controller
 from sys import exit
 from colorama import init, Fore, Back, Style
+from mysql.connector.errors import DatabaseError
 
 
 init(convert=True)
@@ -76,16 +77,21 @@ def menu_has_nodes():
 
 def main():
     print("\nWelcome (⌐ ͡■ ͜ʖ ͡■) \n\n------------- CONNECTION ------------\n")
-    # Try to create controller and connect to database instance.
-    # Initialize the controller and db connections
-    con = Controller()
     print("\n-------------------------------------")
 
     while True:
-        if con.is_connected() and len(con.get_nodes()) > 0:
-            menu_has_nodes()
-        else:
+        # Try to create controller and connect to database instance.
+        # Initialize the controller and db connections
+        con = Controller()
+        try:
+            if con.is_connected() and len(con.get_api_list()) > 0:
+                menu_has_nodes()
+            else:
+                menu_no_nodes()
+        except DatabaseError as error:
+            print("\nERROR: Could not connect to database instance.\n\t└", error.msg)
             menu_no_nodes()
+
 
         choice = input("\033[0;36m>> \033[0m").strip()
         
