@@ -1,5 +1,5 @@
 from array import array
-from node import Node
+from node import Worker as Node
 from platform import node
 from api_instance import API_custom
 from db import db_connect
@@ -11,11 +11,6 @@ class Controller:
     """
     outdated, need to rewrite
     """
-
-
-    # These api credentials are for general user queries such as finding a new person of interest
-    __general_api_list = []
-    __general_api_files = []
 
     # These api credentials are for finding followers of a user
     __api_list = []
@@ -41,11 +36,9 @@ class Controller:
     #
     #-----------------------------------------------------------------#
 
-    def get_api_list(self) -> array[API_custom]:
+    def get_api_list(self) -> list[API_custom]:
         return self.__api_list
 
-    def get_general_api_list(self) -> array[API_custom]:
-        return self.__general_api_list
 
     def connect(self) -> None:
         # CONNECT TO DB #
@@ -63,8 +56,6 @@ class Controller:
         #-------------------------------------------------------#
 
         self.__api_files = [f.path for f in os.scandir('credentials') if f.name.endswith('.ini') and f.is_file()]
-        self.__general_api_files = [f.path for f in os.scandir('gen_credentials') if f.name.endswith('.ini') and f.is_file()]
-
     #-----------------------------------------------------------------#
     #     
     #-----------------------------------------------------------------#
@@ -76,10 +67,6 @@ class Controller:
         
         creds = [API_custom(path) for path in self.__api_files]
         self.__api_list = [ n for n in creds if n.is_vaild()]
-
-        creds = [API_custom(path) for path in self.__general_api_files]
-        self.__general_api_list = [ n for n in creds if n.is_vaild()]
-
 
     #-----------------------------------------------------------------#
     #

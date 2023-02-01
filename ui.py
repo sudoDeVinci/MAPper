@@ -13,7 +13,6 @@ def start_controller(con):
         con.connect()
 
 
-
 # Create nodes
 def create_nodes(con: Controller):
     print("\n----------- CREDENTIAL'[]; CREATION ------------\n")

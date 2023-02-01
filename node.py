@@ -18,7 +18,7 @@ class Worker:
     __number = None
 
 
-    def __init__(self, api: API) -> None:
+    def __init__(self, api: API = None) -> None:
         self.__api = api
 
 
@@ -143,7 +143,7 @@ class Worker:
     Once done, find a follwoer that hasnt been indexed and give them a map and zoo score. If either score is at least 0.5
     then continue
     """
-    def scrape_user(self, api_list: array[API]) -> None:
+    def scrape_user(self, api_list: list[API]) -> None:
 
         poi = self.__get_valid_poi()
         insert_user(poi.id_str, poi.id_str, poi.screen_name, poi.protected, poi.profile_image_url_https, poi.description, poi.created_at)
