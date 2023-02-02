@@ -34,7 +34,7 @@ class API_custom:
     def is_valid(self) -> bool:
         return self.__valid
 
-
+    # (Not implemented yet.)
     def get_timestamp(self):
         return self.__last_used
 
@@ -60,7 +60,7 @@ class API_custom:
             #bearer_token = config['twitter']['BEARER_TOKEN']
 
             # This is optional and has no bearing on operation
-            self.__number = config['twitter']['NUMBER']
+            #self.__number = config['twitter']['NUMBER']
 
             # Authenticate Node details
             try:
@@ -73,7 +73,7 @@ class API_custom:
                 self.__number = uuid4()
 
                 # Print Node status
-                print(">> Authenticated: API instance {0} Running.\n".format(self.__number))
+                #print(">> Authenticated: API instance {0} Running.\n".format(self.__number))
             
             except Exception as e:
                 print("\t└ ERROR: Please check authentication details for API instance {0}.\n\t\t└ ".format(self.__number), e)

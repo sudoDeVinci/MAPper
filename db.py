@@ -1,6 +1,9 @@
 from dbinit import cnx, DB_NAME
 import mysql.connector
+from colorama import init, Fore, Back, Style
 from mysql.connector import errorcode
+
+init(convert=True)
 
 # Database schema
 def init_db():
@@ -113,5 +116,5 @@ def db_connect():
 
         return True
     except mysql.connector.Error as error:
-        print("\nERROR: Could not connect to database instance.\n\t└", error.msg)
+        print("\n\033[91mERROR: Could not connect to database instance.\033[0m\n\t└", error.msg)
         return False

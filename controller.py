@@ -24,7 +24,7 @@ class Controller:
     faster scraping, but this will require almost double the number of api credentials. I don't feel like opening 20 twitter accounts
     right now.
     """
-    __node = Node()
+    __node = None
 
 
     def __init__(self) -> None:
@@ -56,29 +56,39 @@ class Controller:
         #-------------------------------------------------------#
 
         self.__api_files = [f.path for f in os.scandir('credentials') if f.name.endswith('.ini') and f.is_file()]
+        self.__create_api_list()
     #-----------------------------------------------------------------#
     #     
     #-----------------------------------------------------------------#
 
-    def create_api_list(self) -> None:
+    def __create_api_list(self) -> None:
         #------------------------------------------------------------#
         #   INITIALIZE API instances AND ADD THEM TO ARRAY IF AUTHENTICATED  #
         #------------------------------------------------------------#
-        
+        """
+        We pass the paths to the custom API objects and add those who can be used to authenticate. 
+        """
         creds = [API_custom(path) for path in self.__api_files]
-        self.__api_list = [ n for n in creds if n.is_vaild()]
+        self.__api_list = [ n for n in creds if n.is_valid()]
 
     #-----------------------------------------------------------------#
     #
     #-----------------------------------------------------------------#
 
-    def deploy_nodes(self) -> int:
+    def deploy(self) -> int:
 
         """
         Ideally in the final version, I want to utilize the Queue() class to have dynamically changing
-        nodes within a queue to allow the user to have finer control over Nodes. This may help for scaling
-        the application to a larger number of Nodes.
+        credentials within a queue to allow the user to have finer control over creds. This may help for scaling
+        the application to a larger number of creds.
         """
+        
+
+        """
+        Right now I',m only passing a single api object, but in the future,
+        I would pass the entire list 
+        """
+        self.__node = Node(self.__api_list[0])
         try:
             self.__node.scrape_user()
         except Exception as e:
