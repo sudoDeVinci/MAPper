@@ -30,16 +30,16 @@ class Worker:
         prev_zoo_score = get_zoo_score(followed_user_id)
 
         # Pull follower information
-        # First page of follwoer info
-        user_page = tweepy.Cursor(self.__api.get_api().get_followers, user_id = followed_user_id).items()
+        # First page of follower info
+        cursor = tweepy.Cursor(self.__api.get_api().get_followers, user_id = followed_user_id, count = 2000).pages()
         # Iterate over pages of followers
         while True:
             try:
                 # attempt to get next page of followers, then sleep.
-                users = user_page.next()
-                sleep(60)
+                user_page = cursor.next()
+                sleep(45)
 
-                for user in users:
+                for user in user_page:
                     id = user.id
                     name = user.name
                     user_at = user.screen_name
@@ -64,21 +64,23 @@ class Worker:
                         """
                         assign_zoo_score(id, zoo_score)
                         assign_map_score(id, map_score)
+                        print(">>", name)
                     else:
                         self.__consecutive_errors +=1
                         print("\t└", inserted)
-                        if self.__consecutive_errors >= 5: exit()
+                        #if self.__consecutive_errors >= 5: exit()
 
-                    #--------------------------------#
-                    # ADD A LOG FILE FOR SQL CRASHES #
-                    #--------------------------------#
+                    #----------------------------------------#
+                    # ADD A LOG FILE FOR SQL CRASHES         #
+                    # ADD A LOG FILE FOR  CONSECUTIVE ERRORS #
+                    #----------------------------------------#
                     #---------------------------------------------------------------#
                     # A NODE SHOULD CHECK THE STATE OF SOME OUTSIDE VARIABLE, LIKE  #
                     # A BUTTON TO TELL IT TO STOP ITERATING, THEN IT RETURNS 1      #
                     #---------------------------------------------------------------#
             
             except tweepy.TweepyException as e:
-                print(e)
+                print(f"{e} \n\t└ Waiting for {60*15} seconds")
                 sleep(60*15)
 
             except StopIteration:

@@ -6,7 +6,7 @@ from mysql.connector import errorcode
 # Insert User Records into table
 def insert_user(followed_id, id, user_at, is_private, AVI_path, description, created):
 
-    cursor = cnx.cursor(named_tuple = True)
+    cursor = cnx.cursor(named_tuple = True, buffered = True)
 
     # Insert into the account table 
     try:
@@ -33,7 +33,7 @@ def insert_user(followed_id, id, user_at, is_private, AVI_path, description, cre
 
 # Get the COUNT of the followers of a user by id. 
 def indexed_followers(poi_id):
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     # Get the count of all followers of the poi
     try:
@@ -53,7 +53,7 @@ def indexed_followers(poi_id):
 
 # Get a user's map score by id
 def get_map_score(poi_id):
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     # Get the count of all followers of the poi
     try:
@@ -72,7 +72,7 @@ def get_map_score(poi_id):
 
 # Assign a user map score by id
 def assign_map_score(poi_id, score):
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     # Insert into the MAP_score table 
     try:
@@ -89,7 +89,7 @@ def assign_map_score(poi_id, score):
 
 # Get a user's zoo score by id
 def get_zoo_score(poi_id):
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     # Get the count of all followers of the poi
     try:
@@ -108,7 +108,7 @@ def get_zoo_score(poi_id):
 
 # Assign a user's zoo score by id 
 def assign_zoo_score(poi_id, score):
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     # Insert into the MAP_score table 
     try:
@@ -128,7 +128,7 @@ def assign_zoo_score(poi_id, score):
 def get_next_poi(current_poi, api):
 
     # Get tuple of all followers of current poi.
-    cursor = cnx.cursor(named_tuple = True)
+    cursor = cnx.cursor(named_tuple = True, buffered = True)
 
     current_poi_id = current_poi.id_str
 

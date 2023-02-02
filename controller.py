@@ -88,7 +88,7 @@ class Controller:
         Right now I',m only passing a single api object, but in the future,
         I would pass the entire list 
         """
-        self.__node = Node(self.__api_list[0])
+        self.__node = Node(self.__api_list[1])
         try:
             self.__node.scrape_user()
         except Exception as e:

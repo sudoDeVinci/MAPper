@@ -7,11 +7,14 @@ init(convert=True)
 
 # Database schema
 def init_db():
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered = True)
 
     cursor.execute(f"""
         CREATE DATABASE IF NOT EXISTS {DB_NAME};
     """)
+
+    cursor.execute("""SET NAMES utf8mb4;""") 
+    cursor.execute(f"""ALTER DATABASE {DB_NAME} CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci;""")
 
     cnx.database = DB_NAME
 

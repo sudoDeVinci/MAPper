@@ -102,7 +102,7 @@ def main():
             case '5':
                 break
             case _:
-                print("\n\033[91mInavlid Selection.\033[0m \n")
+                print("\n\033[91mInvalid Selection.\033[0m \n")
 
 
 if __name__ == "__main__":
