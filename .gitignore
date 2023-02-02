@@ -3,3 +3,4 @@ Lib/
 Include/
 *.cfg
 *.pyc
+*.ini
