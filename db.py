@@ -23,6 +23,7 @@ def init_db():
         USE {DB_NAME};
     """)
 
+    cnx.commit()
 
     # Create table to hold account details
     cursor.execute(f"""

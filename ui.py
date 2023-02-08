@@ -32,28 +32,28 @@ def print_available_creds(con: Controller) -> None:
 
 
 
-# Deploy nodes
+# Deploy workers
 def deploy(con: Controller) -> None:
     con.deploy()
 
 
 
-def menu_no_nodes() -> None:
+def menu_no_workers() -> None:
     print("""
 [1] Connect to database
 [2] View Credential List
-[3] Reload Node Configs
+[3] Reload API Configs
 \033[1;30m[4] Deploy\033[0m
 [5] Exit
 """)
 
 
 
-def menu_has_nodes():
+def menu_has_workers():
     print("""
 [1] Connect to database
 [2] View Credential List
-[3] Reload Node Configs
+[3] Reload API Configs
 [4] Deploy
 [5] Exit
 """)
@@ -75,16 +75,17 @@ def main():
         print("\n\033[91mERROR: Could not connect to database instance.\033[0m\n\t└", error.msg)
         valid = False
 
-    while True:
 
+    while True:
         if valid:
-            menu_has_nodes()
+            menu_has_workers()
         else: 
-            menu_no_nodes()
+            menu_no_workers()
 
 
         choice = input("\033[0;36m>> \033[0m").strip()
-        
+
+
         match choice:
             case '1': 
                 start_controller(con)

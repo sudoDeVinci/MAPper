@@ -18,9 +18,17 @@ class API_custom:
     # When used, a timestamp will be assigned to an API instance
     __last_used: datetime = None
 
+    # Initial poi
+    __init_poi = None
+
+
     # Initialize API instance
     def __init__(self, path) -> None:
         self.__login(path)
+
+
+    def get_init_poi(self):
+        return self.__init_poi
 
 
     def get_number(self):
@@ -33,6 +41,7 @@ class API_custom:
 
     def is_valid(self) -> bool:
         return self.__valid
+
 
     # (Not implemented yet.)
     def get_timestamp(self):
@@ -56,7 +65,7 @@ class API_custom:
 
             access_token = config['twitter']['ACCESS_TOKEN']
             access_token_secret = config['twitter']['SECRET_ACCESS_TOKEN']
-
+            
             #bearer_token = config['twitter']['BEARER_TOKEN']
 
             # This is optional and has no bearing on operation
@@ -71,12 +80,13 @@ class API_custom:
 
                 self.__valid = True
                 self.__number = uuid4()
+                self.__init_poi = config['twitter']['INITIAL_POI']
 
                 # Print Node status
                 #print(">> Authenticated: API instance {0} Running.\n".format(self.__number))
             
             except Exception as e:
-                print("\t└ ERROR: Please check authentication details for API instance {0}.\n\t\t└ ".format(self.__number), e)
+                print("\t└ ERROR: Please check authentication details for API instance {0}.\n\t\t└ ".format(self.__number))
                 self.__valid = False
 
         except Exception as e:

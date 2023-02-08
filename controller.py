@@ -1,6 +1,5 @@
-from array import array
-from node import Worker as Node
-from platform import node
+from multiprocessing import Process
+from worker import Worker
 from api_instance import API_custom
 from db import db_connect
 from colorama import init, Fore, Back
@@ -17,14 +16,11 @@ class Controller:
     __api_files = []
 
     # Whether the database can be successfully connected to
-    __connected: bool = False
+    __connected = False
 
-    """
-    For now, we are using only one Node instance. In the future, it will be completely possible to use multiple in parallel for
-    faster scraping, but this will require almost double the number of api credentials. I don't feel like opening 20 twitter accounts
-    right now.
-    """
-    __node = None
+    __workers: list[Worker] = None
+
+    __processes: list[Process] = None 
 
 
     def __init__(self) -> None:
@@ -76,7 +72,7 @@ class Controller:
     #-----------------------------------------------------------------#
 
     def deploy(self) -> int:
-
+        
         """
         Ideally in the final version, I want to utilize the Queue() class to have dynamically changing
         credentials within a queue to allow the user to have finer control over creds. This may help for scaling
@@ -88,9 +84,12 @@ class Controller:
         Right now I',m only passing a single api object, but in the future,
         I would pass the entire list 
         """
-        self.__node = Node(self.__api_list[1])
+
+        self.__workers = [Worker(self.__api_list[i]) for i in range(len(self.__api_list))]
+        self.__processes = [Process(target = w.scrape_user) for w in self.__workers]
         try:
-            self.__node.scrape_user()
+            for p in self.__processes: p.start()
+            for p in self.__processes: p.join()
         except Exception as e:
             print(e)
         

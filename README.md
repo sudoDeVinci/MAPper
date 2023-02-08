@@ -19,4 +19,4 @@ With the rate limits of the Twitter API being account token specific, simply cha
 
 ## Efficiency
 
-While a single token switching scraping process is capable of indexing multiple thousands of accounts in minutes, certain speheres of interest in a network can span hundreds of thousands of accounts with thousands of connections between each account. This is why I decided to implement the idea of "Nodes". These are worker processes which are identical, capable of scraping and switching authentication tokens as needed between them. These Nodes could then be monitored from a central controller process.
+While a single token switching scraping process is capable of indexing multiple thousands of accounts in minutes, certain speheres of interest in a network can span hundreds of thousands of accounts with thousands of connections between each account. This is why I decided to implement the idea of Workers. These are worker processes which are identical, capable of scraping and switching authentication tokens as needed between them. These Workers could then be monitored from a central controller process.

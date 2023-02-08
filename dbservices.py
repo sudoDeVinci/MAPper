@@ -1,4 +1,4 @@
-from dbinit import cnx
+from dbinit import cnx, DB_NAME
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -34,6 +34,13 @@ def insert_user(followed_id, id, user_at, is_private, AVI_path, description, cre
 # Get the COUNT of the followers of a user by id. 
 def indexed_followers(poi_id):
     cursor = cnx.cursor(buffered = True)
+
+    # Select the db
+    cursor.execute(f"""
+        USE {DB_NAME};
+    """)
+
+    cnx.commit()
 
     # Get the count of all followers of the poi
     try:
