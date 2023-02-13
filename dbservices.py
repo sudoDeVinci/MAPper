@@ -130,6 +130,13 @@ def assign_zoo_score(poi_id, score):
         return error.msg
 
 
+"""
+Constructing visualizer dataframe:
+
+
+"""
+
+
 # Get followers of current person of interest
 # Get user that has not been crawled yet
 def get_next_poi(current_poi, api):

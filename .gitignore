@@ -1,6 +1,7 @@
 Scripts/
 Lib/
 Include/
+share/
 *.cfg
 *.pyc
 credentials/
