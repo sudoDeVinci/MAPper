@@ -2,7 +2,10 @@ from multiprocessing import Process
 from worker import Worker
 from api_instance import API_custom
 from db import db_connect
+from dbservices import get_follower_relationships
+from visualizer import generate_visual
 from colorama import init, Fore, Back
+from pandas import DataFrame
 import os
 
 class Controller:
@@ -66,6 +69,15 @@ class Controller:
         """
         creds = [API_custom(path) for path in self.__api_files]
         self.__api_list = [ n for n in creds if n.is_valid()]
+
+    #-----------------------------------------------------------------#
+    #
+    #-----------------------------------------------------------------#
+
+    def visualize_followers(self):
+        df = get_follower_relationships()
+        generate_visual(df)
+        return 0
 
     #-----------------------------------------------------------------#
     #

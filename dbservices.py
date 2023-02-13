@@ -1,6 +1,7 @@
 from dbinit import cnx, DB_NAME
 import mysql.connector
 from mysql.connector import errorcode
+import pandas as pd
 
 
 # Insert User Records into table
@@ -131,10 +132,30 @@ def assign_zoo_score(poi_id, score):
 
 
 """
-Constructing visualizer dataframe:
-
-
 """
+def get_follower_relationships() -> pd.DataFrame:
+    # Get tuple of all follwoer relationships over score threshold.
+    cursor = cnx.cursor(named_tuple = True, buffered = True)
+
+    try:
+        cursor.execute("""
+            SELECT acc1.user_at as followed_handle, acc2.user_at as follower_handle, f.followed_id, f.follower_id, m.score AS map, z.score as zoo
+            FROM follows f
+            JOIN account acc1
+            ON acc1.id = f.followed_id
+            JOIN account acc2
+            ON acc2.id = f.follower_id
+            JOIN map_score m
+            ON f.followed_id = m.user_id
+            JOIN zoo_score z
+            ON z.user_id = f.followed_id
+            WHERE m.score>=0.5 OR z.score >= 0.5;
+        """)
+
+        return pd.DataFrame(cursor.fetchall(), columns = ['followed_handle', 'follower_handle', 'followed_id', 'follower_id', 'map', 'zoo'])
+
+    except mysql.connector.Error as error:
+        return error.ms
 
 
 # Get followers of current person of interest

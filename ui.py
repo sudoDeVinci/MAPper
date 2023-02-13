@@ -30,6 +30,11 @@ def print_available_creds(con: Controller) -> None:
         print(f"{api.get_number()}")
     print("\n-------------------------------------")
 
+# Visualize our existing database's follower interactions.
+def visualize(con: Controller):
+    print("\n----------- DATAFRAME -------------\n")
+    print(con.visualize_followers())
+    print("\n-------------------------------------")
 
 
 # Deploy workers
@@ -44,7 +49,8 @@ def menu_no_workers() -> None:
 [2] View Credential List
 [3] Reload API Configs
 \033[1;30m[4] Deploy\033[0m
-[5] Exit
+[5] Visualize Data
+[6] Exit
 """)
 
 
@@ -55,7 +61,8 @@ def menu_has_workers():
 [2] View Credential List
 [3] Reload API Configs
 [4] Deploy
-[5] Exit
+[5] Visualize Data
+[6] Exit
 """)
 
 
@@ -101,6 +108,8 @@ def main():
                 else:
                     deploy(con)
             case '5':
+                visualize(con)
+            case '6':
                 break
             case _:
                 print("\n\033[91mInvalid Selection.\033[0m \n")
