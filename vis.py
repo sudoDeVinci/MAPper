@@ -12,9 +12,9 @@ def generate_visual(df: DataFrame) -> None:
     G = nx.from_pandas_edgelist(df,'followed_handle', 'follower_handle', create_using=nx.DiGraph(), edge_attr='zoo')
     
     print(">> Plotting ...")
-    nx.draw(G, nx.kamada_kawai_layout(G), with_labels = True, arrowsize = 1, node_size = 70, alpha = 0.70, font_size = 3, font_color = 'black', edge_color = 'green', node_color = 'yellow', width = 0.5)
+    nx.draw(G, nx.kamada_kawai_layout(G), with_labels = True, arrowsize = 1, node_size = 70, alpha = 0.75, font_size = 3, font_color = 'black', edge_color = 'grey', node_color = 'red', width = 0.5)
 
 
     plt.title("Network Visualization Graph")
-    plt.savefig('graphs/network.png', dpi = 3000, format = 'png', bbox_inches = 'tight')
+    plt.savefig('graphs/network.png', dpi = 3000, format = 'png', bbox_inches = 'tight', transparent = True)
     print('>> Done.')
