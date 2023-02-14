@@ -15,6 +15,6 @@ def generate_visual(df: DataFrame) -> None:
     nx.draw(G, nx.kamada_kawai_layout(G), with_labels = True, arrowsize = 1, node_size = 70, alpha = 0.75, font_size = 3, font_color = 'black', edge_color = 'grey', node_color = 'red', width = 0.5)
 
 
-    plt.title("Network Visualization Graph")
+    plt.title("Network Visualization Graph", color = 'white')
     plt.savefig('graphs/network.png', dpi = 3000, format = 'png', bbox_inches = 'tight', transparent = True)
     print('>> Done.')
