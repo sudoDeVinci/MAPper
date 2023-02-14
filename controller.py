@@ -3,7 +3,7 @@ from worker import Worker
 from api_instance import API_custom
 from db import db_connect
 from dbservices import get_follower_relationships
-from visualizer import generate_visual
+from vis import generate_visual
 from colorama import init, Fore, Back
 from pandas import DataFrame
 import os
@@ -74,7 +74,7 @@ class Controller:
     #
     #-----------------------------------------------------------------#
 
-    def visualize_followers(self):
+    def visualize_followers(self) -> int:
         df = get_follower_relationships()
         generate_visual(df)
         return 0

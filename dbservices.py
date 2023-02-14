@@ -1,7 +1,8 @@
 from dbinit import cnx, DB_NAME
 import mysql.connector
 from mysql.connector import errorcode
-import pandas as pd
+from pandas import DataFrame
+
 
 
 # Insert User Records into table
@@ -131,13 +132,15 @@ def assign_zoo_score(poi_id, score):
         return error.msg
 
 
-"""
-"""
-def get_follower_relationships() -> pd.DataFrame:
-    # Get tuple of all follwoer relationships over score threshold.
+# Get a dataframe of all user-follower relationships
+def get_follower_relationships() -> DataFrame|str:
+    # Get tuple of all follower relationships over score threshold.
     cursor = cnx.cursor(named_tuple = True, buffered = True)
-
     try:
+        """
+        The following query has been limited to only return 3000 accounts
+        As processing takes far too long and graphs become less readable.
+        """
         cursor.execute("""
             SELECT acc1.user_at as followed_handle, acc2.user_at as follower_handle, f.followed_id, f.follower_id, m.score AS map, z.score as zoo
             FROM follows f
@@ -149,10 +152,10 @@ def get_follower_relationships() -> pd.DataFrame:
             ON f.followed_id = m.user_id
             JOIN zoo_score z
             ON z.user_id = f.followed_id
-            WHERE m.score>=0.5 OR z.score >= 0.5;
+            WHERE m.score>=0.50 OR z.score >= 0.50 LIMIT 3000;
         """)
 
-        return pd.DataFrame(cursor.fetchall(), columns = ['followed_handle', 'follower_handle', 'followed_id', 'follower_id', 'map', 'zoo'])
+        return DataFrame(cursor.fetchall(), columns = ['followed_handle', 'follower_handle', 'followed_id', 'follower_id', 'map', 'zoo'])
 
     except mysql.connector.Error as error:
         return error.ms

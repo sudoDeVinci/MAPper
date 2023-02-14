@@ -32,8 +32,8 @@ def print_available_creds(con: Controller) -> None:
 
 # Visualize our existing database's follower interactions.
 def visualize(con: Controller):
-    print("\n----------- DATAFRAME -------------\n")
-    print(con.visualize_followers())
+    print("\n----------- GRAPH -------------\n")
+    con.visualize_followers()
     print("\n-------------------------------------")
 
 
