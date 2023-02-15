@@ -152,7 +152,7 @@ def get_follower_relationships() -> DataFrame|str:
             ON f.followed_id = m.user_id
             JOIN zoo_score z
             ON z.user_id = f.followed_id
-            WHERE m.score>=0.50 OR z.score >= 0.50 LIMIT 3000;
+            ORDER BY RAND() LIMIT 10000;
         """)
 
         return DataFrame(cursor.fetchall(), columns = ['followed_handle', 'follower_handle', 'followed_id', 'follower_id', 'map', 'zoo'])

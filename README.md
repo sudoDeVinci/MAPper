@@ -6,14 +6,21 @@ Through the use of network analysis however, we can uncover the web of intertwin
 
 ## First Run
 
+### Small Sample
 This is the output of the data scraped by the first version of MAPper.
-This graph was constructed by selecting 3,000 scraped accounts with scores >= 0.5.
+This graph was constructed by randomly selecting 3,000 scraped accounts.
 
 The total number of accounts scraped however, is over 20,000.
 
-!['Network Graph'](graphs/network.png)
+!['Network Graph'](graphs/network_3000.png)
 
-As we can see, clear spheres of interest with a section of overlap is visible. Key accounts can now be selected for directly.
+As we can see, clear circles of interest with a section of overlap are visible. Key accounts can now be selected for directly.
+
+### Large Sample
+
+This is the output of the data sampled from 10,000 accounts. Our same circles of influence are present but here, new overlapping ones are present.
+
+!['Network Graph'](graphs/network_10000.png)
 
 ## How it works
 
