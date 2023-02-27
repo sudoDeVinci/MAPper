@@ -74,9 +74,9 @@ class Controller:
     #
     #-----------------------------------------------------------------#
 
-    def visualize_followers(self) -> int:
-        df = get_follower_relationships()
-        generate_visual(df)
+    def visualize_followers(self, num: int) -> int:
+        df = get_follower_relationships(num)
+        generate_visual(df, num)
         return 0
 
     #-----------------------------------------------------------------#
@@ -109,3 +109,18 @@ class Controller:
     #-----------------------------------------------------------------#
     #
     #-----------------------------------------------------------------#
+
+# Take in user input and convert to integer
+
+def stdin_int(prompt: str) -> int:
+    while(True):
+        num: str = input(f"\033[0;36m>> {prompt}: \033[0m").strip()
+        try:
+            num = int(num)
+            if num < 0:
+                print(f"\n\033[91mERROR: Sample Size must be positive.\033[0m\n")
+                continue
+            return num
+        except ValueError as e:
+            print(f"\n\033[91mERROR: {num} Input is not an integer.\033[0m\n")
+            continue

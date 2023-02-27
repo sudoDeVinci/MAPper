@@ -1,4 +1,4 @@
-from controller import Controller
+from controller import Controller, stdin_int
 from sys import exit
 from colorama import init, Fore, Back, Style
 from mysql.connector.errors import DatabaseError
@@ -33,7 +33,8 @@ def print_available_creds(con: Controller) -> None:
 # Visualize our existing database's follower interactions.
 def visualize(con: Controller):
     print("\n----------- GRAPH -------------\n")
-    con.visualize_followers()
+    num = stdin_int("Account Sample Size")
+    con.visualize_followers(num)
     print("\n-------------------------------------")
 
 

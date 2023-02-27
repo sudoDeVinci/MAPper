@@ -133,13 +133,13 @@ def assign_zoo_score(poi_id, score):
 
 
 # Get a dataframe of all user-follower relationships
-def get_follower_relationships() -> DataFrame|str:
+def get_follower_relationships(num: int) -> DataFrame|str:
     # Get tuple of all follower relationships over score threshold.
     cursor = cnx.cursor(named_tuple = True, buffered = True)
     try:
         """
-        The following query has been limited to only return 3000 accounts
-        As processing takes far too long and graphs become less readable.
+        The following query has been limited to only return a user defined number of accounts
+        As processing all accounts every time takes far too long and graphs become less readable.
         """
         cursor.execute("""
             SELECT acc1.user_at as followed_handle, acc2.user_at as follower_handle, f.followed_id, f.follower_id, m.score AS map, z.score as zoo
@@ -152,8 +152,8 @@ def get_follower_relationships() -> DataFrame|str:
             ON f.followed_id = m.user_id
             JOIN zoo_score z
             ON z.user_id = f.followed_id
-            ORDER BY RAND() LIMIT 10000;
-        """)
+            ORDER BY RAND() LIMIT %s;
+        """, [num]) 
 
         return DataFrame(cursor.fetchall(), columns = ['followed_handle', 'follower_handle', 'followed_id', 'follower_id', 'map', 'zoo'])
 
