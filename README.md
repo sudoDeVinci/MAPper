@@ -12,7 +12,7 @@ This graph was constructed by randomly selecting 3,000 scraped accounts.
 
 The total number of accounts scraped however, is over 20,000.
 
-!['Network Graph'](graphs/network_3000_rand.jpg)
+!['Network Graph'](graphs/network_3000_rand.png)
 
 As we can see, clear circles of interest with a section of overlap are visible. Key accounts can now be selected for directly.
 
@@ -20,7 +20,7 @@ As we can see, clear circles of interest with a section of overlap are visible. 
 
 This is the output of the data sampled from 10,000 accounts. Our same circles of influence are present but here, new overlapping ones are present.
 
-!['Network Graph'](graphs/network_10000.svg)
+!['Network Graph'](graphs/network_10000.png)
 
 ## How it works
 
