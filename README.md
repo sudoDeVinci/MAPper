@@ -12,7 +12,7 @@ This graph was constructed by randomly selecting 3,000 scraped accounts.
 
 The total number of accounts scraped however, is over 20,000.
 
-!['Network Graph'](graphs/network_3000_rand.png)
+!['Network Graph'](graphs/network_3000.png)
 
 As we can see, clear circles of interest with a section of overlap are visible. Key accounts can now be selected for directly.
 
