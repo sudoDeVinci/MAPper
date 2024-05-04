@@ -20,7 +20,7 @@ As we can see, clear circles of interest with a section of overlap are visible. 
 
 This is the output of the data sampled from 10,000 accounts. Our same circles of influence are present but here, new overlapping ones are present.
 
-!['Network Graph'](graphs/network_10000.jpg)
+!['Network Graph'](graphs/network_10000.svg)
 
 ## How it works
 

@@ -1,59 +1,64 @@
 import configparser
-from uuid import uuid4
+from uuid import uuid4, UUID
 import tweepy
 from datetime import datetime
 from colorama import init, Fore, Back
 
 class API_custom:
+    """
+    Wrapper around Tweepy API object.
+    """
+
+    __slots__ = ('_valid', '_api', '_number','_last_used','_init_poi')
 
     # API instance has been used to authenticate at least once
-    __valid = False
+    _valid: bool = False
 
     # API instance with config details from file
-    __api: tweepy.API = None
+    _api: tweepy.API = None
 
     # Each API is passed different details and given a corresponding number/uuid
-    __number = None
+    _number: UUID = None
 
     # When used, a timestamp will be assigned to an API instance
-    __last_used: datetime = None
+    _last_used: datetime = None
 
     # Initial poi
-    __init_poi = None
+    _init_poi: str = None
 
 
     # Initialize API instance
     def __init__(self, path) -> None:
-        self.__login(path)
+        self._login(path)
 
 
     def get_init_poi(self):
-        return self.__init_poi
+        return self._init_poi
 
 
     def get_number(self):
-        return self.__number
+        return self._number
 
 
     def get_api(self) -> tweepy.API:
-        return self.__api
+        return self._api
 
 
     def is_valid(self) -> bool:
-        return self.__valid
+        return self._valid
 
 
     # (Not implemented yet.)
     def get_timestamp(self):
-        return self.__last_used
+        return self._last_used
 
 
     def set_timestamp(self, new_time: datetime):
-        self.__last_used = new_time
+        self._last_used = new_time
     
 
     # Login using config file details
-    def __login(self, path) -> None:
+    def _login(self, path) -> None:
         # read the config file
         config = configparser.ConfigParser()
         try:
@@ -65,29 +70,24 @@ class API_custom:
 
             access_token = config['twitter']['ACCESS_TOKEN']
             access_token_secret = config['twitter']['SECRET_ACCESS_TOKEN']
-            
-            #bearer_token = config['twitter']['BEARER_TOKEN']
-
-            # This is optional and has no bearing on operation
-            #self.__number = config['twitter']['NUMBER']
 
             # Authenticate Node details
             try:
                 auth = tweepy.OAuthHandler(api_key, api_key_secret)
                 auth.set_access_token(access_token, access_token_secret)
                 
-                self.__api = tweepy.API(auth, wait_on_rate_limit = True)
+                self._api = tweepy.API(auth, wait_on_rate_limit = True)
 
-                self.__valid = True
-                self.__number = uuid4()
-                self.__init_poi = config['twitter']['INITIAL_POI']
+                self._valid = True
+                self._number = uuid4()
+                self._init_poi = config['twitter']['INITIAL_POI']
 
                 # Print Node status
                 #print(">> Authenticated: API instance {0} Running.\n".format(self.__number))
             
             except Exception as e:
-                print("\t└ ERROR: Please check authentication details for API instance {0}.\n\t\t└ ".format(self.__number))
-                self.__valid = False
+                print("\t└ ERROR: Please check authentication details for API instance {0}.\n\t\t└ ".format(self._number))
+                self._valid = False
 
         except Exception as e:
             print("\t└ ERROR: Please check authentication details for API instances")

@@ -14,21 +14,23 @@ class Controller:
     outdated, need to rewrite
     """
 
+    __slots__ = ('_api_list', '_api_files', '_connected', '_workers', '_processes')
+
     # These api credentials are for finding followers of a user
-    __api_list = []
-    __api_files = []
+    _api_list = []
+    _api_files = []
 
     # Whether the database can be successfully connected to
-    __connected = False
+    _connected = False
 
-    __workers: list[Worker] = None
+    _workers: list[Worker] = None
 
-    __processes: list[Process] = None 
+    _processes: list[Process] = None 
 
 
     def __init__(self) -> None:
         self.connect()
-        if self.__connected == True:
+        if self._connected == True:
             self.refresh_configs()
     
     #-----------------------------------------------------------------#
@@ -36,16 +38,16 @@ class Controller:
     #-----------------------------------------------------------------#
 
     def get_api_list(self) -> list[API_custom]:
-        return self.__api_list
+        return self._api_list
 
 
     def connect(self) -> None:
         # CONNECT TO DB #
-        self.__connected = db_connect()
+        self._connected = db_connect()
 
 
     def is_connected(self) -> bool:
-        return self.__connected
+        return self._connected
 
 
     def refresh_configs(self) -> None:
@@ -54,21 +56,21 @@ class Controller:
         #   THEY ARE ADDED TO AN ARRAY.                         #
         #-------------------------------------------------------#
 
-        self.__api_files = [f.path for f in os.scandir('credentials') if f.name.endswith('.ini') and f.is_file()]
-        self.__create_api_list()
+        self._api_files = [f.path for f in os.scandir('credentials') if f.name.endswith('.ini') and f.is_file()]
+        self._create_api_list()
     #-----------------------------------------------------------------#
     #     
     #-----------------------------------------------------------------#
 
-    def __create_api_list(self) -> None:
+    def _create_api_list(self) -> None:
         #------------------------------------------------------------#
         #   INITIALIZE API instances AND ADD THEM TO ARRAY IF AUTHENTICATED  #
         #------------------------------------------------------------#
         """
         We pass the paths to the custom API objects and add those who can be used to authenticate. 
         """
-        creds = [API_custom(path) for path in self.__api_files]
-        self.__api_list = [ n for n in creds if n.is_valid()]
+        creds = [API_custom(path) for path in self._api_files]
+        self._api_list = [ n for n in creds if n.is_valid()]
 
     #-----------------------------------------------------------------#
     #
@@ -97,11 +99,11 @@ class Controller:
         I would pass the entire list 
         """
 
-        self.__workers = [Worker(self.__api_list[i]) for i in range(len(self.__api_list))]
-        self.__processes = [Process(target = w.scrape_user) for w in self.__workers]
+        self._workers = [Worker(self._api_list[i]) for i in range(len(self._api_list))]
+        self._processes = [Process(target = w.scrape_user) for w in self._workers]
         try:
-            for p in self.__processes: p.start()
-            for p in self.__processes: p.join()
+            for p in self._processes: p.start()
+            for p in self._processes: p.join()
         except Exception as e:
             print(e)
         
